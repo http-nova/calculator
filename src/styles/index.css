@@ -33,6 +33,12 @@ body {
   margin-bottom: 12px;
 }
 
+.display__expression {
+  font-size: 13px;
+  color: #666;
+  min-height: 16px;
+}
+
 .display__result {
   font-size: 28px;
 }
@@ -51,20 +57,17 @@ body {
   cursor: pointer;
 }
 
-.key:disabled {
-  color: #bbb;
-  cursor: not-allowed;
-}
-
 .key--zero {
   grid-column: span 2;
 }
 
-.log-button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px 0;
-  cursor: pointer;
+.key--op {
+  background: #e8f4ff;
+}
+
+.key--equals {
+  background: #333;
+  color: #fff;
 }
 
 .history {

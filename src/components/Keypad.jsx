@@ -1,44 +1,37 @@
 const ROWS = [
-  [{ label: "AC", type: "clear" }, { label: "DEL", type: "disabled" }, { label: "%", type: "disabled" }, { label: "÷", type: "disabled" }],
-  [{ label: "7", type: "digit" }, { label: "8", type: "digit" }, { label: "9", type: "digit" }, { label: "×", type: "disabled" }],
-  [{ label: "4", type: "digit" }, { label: "5", type: "digit" }, { label: "6", type: "digit" }, { label: "−", type: "disabled" }],
-  [{ label: "1", type: "digit" }, { label: "2", type: "digit" }, { label: "3", type: "digit" }, { label: "+", type: "disabled" }],
-  [{ label: "0", type: "digit", wide: true }, { label: ".", type: "digit" }, { label: "=", type: "disabled" }],
+  [{ label: "AC", type: "clear" }, { label: "DEL", type: "util", action: "backspace" }, { label: "%", type: "util", action: "percent" }, { label: "÷", type: "op", action: "divide" }],
+  [{ label: "7", type: "digit" }, { label: "8", type: "digit" }, { label: "9", type: "digit" }, { label: "×", type: "op", action: "multiply" }],
+  [{ label: "4", type: "digit" }, { label: "5", type: "digit" }, { label: "6", type: "digit" }, { label: "−", type: "op", action: "subtract" }],
+  [{ label: "1", type: "digit" }, { label: "2", type: "digit" }, { label: "3", type: "digit" }, { label: "+", type: "op", action: "add" }],
+  [{ label: "0", type: "digit", wide: true }, { label: ".", type: "digit" }, { label: "=", type: "equals" }],
 ];
 
-export default function Keypad({ onDigit, onClear }) {
+export default function Keypad({ onDigit, onOperator, onEquals, onClear, onPercent, onBackspace }) {
+  function handleClick(key) {
+    switch (key.type) {
+      case "digit": return onDigit(key.label);
+      case "op": return onOperator(key.action);
+      case "clear": return onClear();
+      case "equals": return onEquals();
+      case "util":
+        if (key.action === "percent") return onPercent();
+        if (key.action === "backspace") return onBackspace();
+        return;
+      default: return;
+    }
+  }
+
   return (
     <div className="keypad">
-      {ROWS.flat().map((key, i) => {
-        if (key.type === "digit") {
-          return (
-            <button
-              key={i}
-              className={`key key--digit${key.wide ? " key--zero" : ""}`}
-              onClick={() => onDigit(key.label)}
-            >
-              {key.label}
-            </button>
-          );
-        }
-        if (key.type === "clear") {
-          return (
-            <button key={i} className="key key--util" onClick={onClear}>
-              {key.label}
-            </button>
-          );
-        }
-        return (
-          <button
-            key={i}
-            className="key key--op"
-            disabled
-            title="Calculation logic lands in Commit 2"
-          >
-            {key.label}
-          </button>
-        );
-      })}
+      {ROWS.flat().map((key, i) => (
+        <button
+          key={i}
+          className={`key key--${key.type}${key.wide ? " key--zero" : ""}`}
+          onClick={() => handleClick(key)}
+        >
+          {key.label}
+        </button>
+      ))}
     </div>
   );
 }
